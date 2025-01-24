@@ -1,11 +1,11 @@
 package com.example.demo.controllers;
 
 
+import com.example.demo.model.Achievements;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,4 +97,17 @@ return chatClient.prompt(prompt)
                 .getOutput()
                 .getContent();
     }
+   @GetMapping("/achievements")
+    public Achievements getAchievements(@RequestParam String name){
+        String message= """
+                provide a list of achievements for {player}
+                """;
+PromptTemplate template =new PromptTemplate(message);
+Prompt prompt =template.create(Map.of("player",name));
+ return chatClient .prompt(prompt)
+         .call()
+         .entity(new ParameterizedTypeReference<Achievements>() {
+         });
+
+   }
 }
